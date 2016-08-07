@@ -3,5 +3,6 @@ namespace Observer;
 
 //autoload
 spl_autoload_register(function ($class) {
-    include str_replace(['\\', __NAMESPACE__], ['/','src'], $class) . '.php';
+    $path = str_replace('\\', '/', $class) . '.php';
+    include preg_replace('/^' . __NAMESPACE__ . '/', 'src', $path);
 });

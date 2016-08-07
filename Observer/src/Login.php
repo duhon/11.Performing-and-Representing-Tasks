@@ -1,12 +1,28 @@
 <?php
 namespace Observer;
 
-class Login
+class Login implements \SplSubject
 {
     const LOGIN_USER_UNKNOWN = 1;
     const LOGIN_WRONG_PASS = 2;
     const LOGIN_ACCESS = 3;
-    private $status = array();
+    private $storage;
+    private $status;
+
+    function __construct()
+    {
+        $this->storage = new \SplObjectStorage();
+    }
+
+    function attach(\SplObserver $observer)
+    {
+        $this->storage->attach($observer);
+    }
+
+    function detach(\SplObserver $observer)
+    {
+        $this->storage->detach($observer);
+    }
 
     function handleLogin($user, $pass, $ip)
     {
@@ -25,16 +41,20 @@ class Login
                 $isValid = false;
                 break;
         }
-        Logger::logIP($user, $ip, $this->getStatus());
-        if (!$isValid) {
-            Notifier::mailWarning($user, $ip, $this->getStatus());
-        }
+        $this->notify();
         return $isValid;
     }
 
     private function setStatus($status, $user, $ip)
     {
         $this->status = array($status, $user, $ip);
+    }
+
+    function notify()
+    {
+        foreach ($this->storage as $obs) {
+            $obs->update($this);
+        }
     }
 
     function getStatus()
