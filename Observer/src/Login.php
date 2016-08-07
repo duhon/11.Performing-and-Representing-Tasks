@@ -25,7 +25,10 @@ class Login
                 $isValid = false;
                 break;
         }
-        print "returning " . (($isValid) ? "true" : "false") . "\n";
+        Logger::logIP($user, $ip, $this->getStatus());
+        if (!$isValid) {
+            Notifier::mailWarning($user, $ip, $this->getStatus());
+        }
         return $isValid;
     }
 

@@ -5,27 +5,15 @@ include 'bootstrap.php';
 
 $login = new Login();
 
-for ($x = 1; $x < 20; $x++) {
+for ($x = 1; $x < 5; $x++) {
     $login->handleLogin('bob', 'myPass', '158.152.55.35');
 }
 /* OUTPUT
-returning true
-returning false
-returning true
-returning false
-returning false
-returning true
-returning false
-returning false
-returning false
-returning true
-returning false
-returning false
-returning true
-returning true
-returning true
-returning false
-returning true
-returning true
-returning true
+Logger: bob, ip: 158.152.55.35 status:2/bob/158.152.55.35
+Notifier: bob, ip: 158.152.55.35 status:2/bob/158.152.55.35
+Logger: bob, ip: 158.152.55.35 status:3/bob/158.152.55.35
+Logger: bob, ip: 158.152.55.35 status:1/bob/158.152.55.35
+Notifier: bob, ip: 158.152.55.35 status:1/bob/158.152.55.35
+Logger: bob, ip: 158.152.55.35 status:1/bob/158.152.55.35
+Notifier: bob, ip: 158.152.55.35 status:1/bob/158.152.55.35
 */
