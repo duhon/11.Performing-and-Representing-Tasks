@@ -1,18 +1,27 @@
 <?php
 namespace Interpreter;
 
+use Interpreter\Expression\Operator;
+use Interpreter\Expression\Variable;
+use Interpreter\Expression\Literal;
+
 include 'bootstrap.php';
 
 $context = new Context();
-$myVar = new Expression\Variable('input', 'four');
-$myVar->interpret($context);
-print $context->lookup($myVar) . PHP_EOL; // output: four
+$input = new Variable('input');
 
-$newVar = new Expression\Variable('input');
-$newVar->interpret($context);
-print $context->lookup($newVar) . PHP_EOL; // output: four
+$statement = new Operator\BooleanOr(
+    new Operator\Equals($input, new Literal('four')),
+    new Operator\Equals($input, new Literal('4'))
+);
 
-$myVar->setValue("five");
-$myVar->interpret($context);
-print $context->lookup($myVar) . PHP_EOL; // output: five
-print $context->lookup($newVar) . PHP_EOL; // output: five
+foreach (array("four", "4", "52") as $val) {
+    $input->setValue($val);
+    print "$val:\n";
+    $statement->interpret($context);
+    if ($context->lookup($statement)) {
+        print "top marks\n\n";
+    } else {
+        print "dunce hat on\n\n";
+    }
+}
