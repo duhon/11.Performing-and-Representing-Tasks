@@ -1,12 +1,18 @@
 <?php
 namespace Interpreter;
 
-spl_autoload_register(function ($class) {
-    include str_replace(['\\', __NAMESPACE__], ['/','src'], $class) . '.php';
-});
+include 'bootstrap.php';
 
 $context = new Context();
-$literal = new Expression\Literal('four');
-$literal->interpret($context);
+$myVar = new Expression\Variable('input', 'four');
+$myVar->interpret($context);
+print $context->lookup($myVar) . PHP_EOL; // output: four
 
-print $context->lookup($literal) . PHP_EOL;
+$newVar = new Expression\Variable('input');
+$newVar->interpret($context);
+print $context->lookup($newVar) . PHP_EOL; // output: four
+
+$myVar->setValue("five");
+$myVar->interpret($context);
+print $context->lookup($myVar) . PHP_EOL; // output: five
+print $context->lookup($newVar) . PHP_EOL; // output: five
