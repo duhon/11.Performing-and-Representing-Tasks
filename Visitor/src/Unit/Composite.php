@@ -34,4 +34,13 @@ abstract class Composite extends Unit
     {
         return $this->units;
     }
+
+    function textDump($num = 0)
+    {
+        $txtOut = parent::textDump($num);
+        foreach ($this->units as $unit) {
+            $txtOut .= $unit->textDump($num + 1);
+        }
+        return $txtOut;
+    }
 }
