@@ -1,6 +1,7 @@
 <?php
 namespace Visitor\Unit;
 
+use Visitor\ArmyVisitor;
 use Visitor\Unit;
 
 abstract class Composite extends Unit
@@ -17,6 +18,7 @@ abstract class Composite extends Unit
     {
         if (!$this->units->contains($unit)) {
             $this->units->attach($unit);
+            $unit->setDepth($this->depth + 1);
         }
     }
 
@@ -30,17 +32,24 @@ abstract class Composite extends Unit
         return $this;
     }
 
-    function units()
+    protected function units()
     {
         return $this->units;
     }
 
-    function textDump($num = 0)
+    protected function setDepth($depth)
     {
-        $txtOut = parent::textDump($num);
+        parent::setDepth($depth);
         foreach ($this->units as $unit) {
-            $txtOut .= $unit->textDump($num + 1);
+            $unit->setDepth($this->depth + 1);
         }
-        return $txtOut;
+    }
+
+    function accept(ArmyVisitor $visitor)
+    {
+        parent::accept($visitor);
+        foreach ($this->units as $unit) {
+            $unit->accept($visitor);
+        }
     }
 }

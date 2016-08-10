@@ -2,24 +2,37 @@
 namespace Visitor;
 
 declare(ticks=1);
-
 include 'bootstrap.php';
 
-$main_army = new Unit\Composite\Army();
-$main_army->addUnit(new Unit\Archer());
-$main_army->addUnit(new Unit\LaserCannon());
-$sub_army = new Unit\Composite\Army();
-$sub_army->addUnit(new Unit\Cavalry());
-$main_army->addUnit($sub_army);
-$main_army->addUnit(new Unit\Cavalry());
+$mainArmy = new Unit\Composite\Army();
+$mainArmy->addUnit(new Unit\Archer());
+$mainArmy->addUnit(new Unit\LaserCannon());
+$mainArmy->addUnit(new Unit\Cavalry());
+$subArmy = new Unit\Composite\TroopCarrier();
+$subArmy->addUnit(new Unit\Archer());
+$mainArmy->addUnit($subArmy);
 
-print $main_army->textDump();
+$textDump = new Visitor\TextDumpArmy();
+$mainArmy->accept($textDump);
+print $textDump->getText();
+
+$taxCollector = new Visitor\TaxCollection();
+$mainArmy->accept($taxCollector);
+print $taxCollector->getReport();
+print 'TOTAL: ' . $taxCollector->getTax();
 
 /* OUTPUT
-Visitor\Unit\Composite\Army: bombard: 114
+Visitor\Unit\Composite\Army: bombard: 81
     Visitor\Unit\Archer: bombard: 4
     Visitor\Unit\LaserCannon: bombard: 44
-    Visitor\Unit\Composite\Army: bombard: 33
-        Visitor\Unit\Cavalry: bombard: 33
     Visitor\Unit\Cavalry: bombard: 33
+    Visitor\Unit\Composite\TroopCarrier: bombard: 0
+        Visitor\Unit\Archer: bombard: 4
+Tax levied for Visitor\Unit\Composite\Army: 1
+Tax levied for Visitor\Unit\Archer: 2
+Tax levied for Visitor\Unit\LaserCannon: 1
+Tax levied for Visitor\Unit\Cavalry: 3
+Tax levied for Visitor\Unit\Composite\TroopCarrier: 5
+Tax levied for Visitor\Unit\Archer: 2
+TOTAL: 14
 */

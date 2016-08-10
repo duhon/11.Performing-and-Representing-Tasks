@@ -4,6 +4,7 @@ namespace Visitor;
 abstract class Unit
 {
     private $id = 0;
+    protected $depth = 0;
 
     public function __construct()
     {
@@ -16,15 +17,21 @@ abstract class Unit
         return null;
     }
 
-    function textDump($num = 0)
+    function getDepth()
     {
-        $txtOut = "";
-        $pad = 4 * $num;
-        $txtOut .= sprintf("%{$pad}s", "");
-        $txtOut .= get_class($this) . ": ";
-        $txtOut .= "bombard: " . $this->bombardStrength() . PHP_EOL;
-        return $txtOut;
+        return $this->depth;
+    }
+
+    protected function setDepth($depth)
+    {
+        $this->depth = $depth;
     }
 
     abstract function bombardStrength();
+
+    function accept(ArmyVisitor $visitor)
+    {
+        $method = "visit" . join('', array_slice(explode('\\', get_class($this)), -1));
+        $visitor->$method($this);
+    }
 }
